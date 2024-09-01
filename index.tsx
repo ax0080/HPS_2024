@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { Text, View, Image, StyleSheet, FlatList, Dimensions, Animated } from 'react-native';
+import { Text, View, Image, StyleSheet, FlatList, Dimensions, Animated, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -15,6 +16,7 @@ const data = [
 ];
 
 const Index = () => {
+  const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const handleScroll = Animated.event(
@@ -59,6 +61,10 @@ const Index = () => {
       extrapolate: 'clamp'
     });
 
+    const handlePress = () => {
+      navigation.navigate(`${item.id.charAt(0).toUpperCase() + item.id.slice(1)}Page`);
+    };
+
     return (
       <Animated.View
         style={[
@@ -71,15 +77,17 @@ const Index = () => {
           }
         ]}
       >
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('./pictures/apple.jpg')}
-            style={styles.image}
-          />
-        </View>
-        <View style={[styles.textBox, item.id === 'main' ? styles.mainTextBox : styles.indexTextBox]}>
-          <Text style={styles.text}>{item.label}</Text>
-        </View>
+        <TouchableOpacity onPress={handlePress} style={styles.touchableArea}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('./pictures/apple.jpg')}
+              style={styles.image}
+            />
+          </View>
+          <View style={[styles.textBox, item.id === 'main' ? styles.mainTextBox : styles.indexTextBox]}>
+            <Text style={styles.text}>{item.label}</Text>
+          </View>
+        </TouchableOpacity>
       </Animated.View>
     );
   };
@@ -133,6 +141,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#000000',
   },
+  touchableArea: {
+    flexDirection: 'row',
+    flex: 1,
+  }
 });
 
 export default Index;

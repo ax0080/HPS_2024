@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
@@ -16,20 +17,24 @@ import FoodItem from "../models/FoodItem";
 
 const screenHeight = Dimensions.get("window").height;
 
-const data = [
-  { id: "main", label: "Main" },
-  { id: "index1", label: "Index 1" },
-  { id: "index2", label: "Index 2" },
-  { id: "index3", label: "Index 3" },
-  { id: "index4", label: "Index 4" },
-  { id: "index5", label: "Index 5" },
-  { id: "index6", label: "Index 6" },
-  { id: "index7", label: "Index 7" },
-];
+const fetchDataFromDatabase = (count = 8) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const generatedData = Array.from({ length: count }, (_, index) => ({
+        id: `index${index + 1}`,
+        label: `Index ${index + 1}`,
+        imageUrl: require('./pictures/apple.jpg') // 使用 require 加載本地圖片
+      }));
+      const dataWithMain = [{ id: 'main', label: 'Main', imageUrl: require('./pictures/apple.jpg') }, ...generatedData];
+      resolve(dataWithMain);
+    }, 1000);
+  });
+};
 
 const Index = () => {
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
+
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
 
   useEffect(() => {
@@ -46,27 +51,28 @@ const Index = () => {
     { useNativeDriver: false }
   );
 
+  const handlePress = (item) => {
+    navigation.navigate('DynamicPage', { label: item.label, imageUrl: item.imageUrl });
+  };
+
   const renderItem = ({ item, index }) => {
     const inputRange = [
       ((index - 1) * screenHeight) / 4,
       (index * screenHeight) / 4,
       ((index + 1) * screenHeight) / 4,
     ];
-
+  
     const scale = scrollY.interpolate({
       inputRange,
       outputRange: [0.8, 1.2, 0.8],
       extrapolate: "clamp",
     });
-
+  
     const opacity = scrollY.interpolate({
       inputRange,
       outputRange: [0.5, 1, 0.5],
       extrapolate: "clamp",
     });
-
-    const centerOffset =
-      screenHeight / 2 - ((index * screenHeight) / 4 + screenHeight / 8); // Center offset calculation
 
     const backgroundColor = scrollY.interpolate({
       inputRange: [
@@ -84,12 +90,6 @@ const Index = () => {
       extrapolate: "clamp",
     });
 
-    const handlePress = () => {
-      navigation.navigate(
-        `${item.id.charAt(0).toUpperCase() + item.id.slice(1)}Page`
-      );
-    };
-
     return (
       <Animated.View
         style={[
@@ -102,10 +102,10 @@ const Index = () => {
           },
         ]}
       >
-        <TouchableOpacity onPress={handlePress} style={styles.touchableArea}>
+        <TouchableOpacity onPress={() => handlePress(item)} style={styles.touchableArea}>
           <View style={styles.imageContainer}>
             <Image
-              source={require("./pictures/apple.jpg")}
+              source={item.imageUrl} // Local Picture
               style={styles.image}
             />
           </View>
@@ -121,6 +121,7 @@ const Index = () => {
       </Animated.View>
     );
   };
+  
 
   return (
     <Animated.FlatList

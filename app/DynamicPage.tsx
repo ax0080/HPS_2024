@@ -1,31 +1,29 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
-// 设置屏幕高度
 const screenHeight = Dimensions.get('window').height;
 
 const DynamicPage = () => {
   const route = useRoute();
-  const { label, imageUrl } = route.params || {}; // 防范未定义错误
+  const { name, category, expiration_date, imageUrl } = route.params || {};
 
-  // 确保 imageUrl 是字符串
-  const imageUrlString = typeof imageUrl === 'string' ? imageUrl : '';
-
-  // 根据 imageUrl 是否为本地图片来确定 source
-  const imageSource = imageUrlString.startsWith('http')
-    ? { uri: imageUrlString }
-    : require('./pictures/apple.jpg'); // 使用本地图片作为默认
+  const [loading, setLoading] = useState(true);
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
+        {loading && <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />}
         <Image
-          source={imageSource}
+          source={{ uri: imageUrl }}
           style={styles.largeImage}
+          onLoadEnd={() => setLoading(false)} 
+          onError={(error) => console.log('Image failed to load:', error)} 
         />
         <View style={styles.textBox}>
-          <Text style={styles.text}>{label}</Text>
+          <Text style={styles.text}>{`Name: ${name}`}</Text>
+          <Text style={styles.text}>{`Category: ${category}`}</Text>
+          <Text style={styles.text}>{`Expiration Date: ${expiration_date}`}</Text>
         </View>
       </View>
     </View>
@@ -36,27 +34,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#D9D9D9',
   },
   content: {
     flexDirection: 'column',
     flex: 1,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   largeImage: {
-    width: '100%',
-    height: '50%',
-    resizeMode: 'cover',
+    width: '100%', 
+    height: screenHeight * 0.4, 
+    resizeMode: 'contain', 
+    borderRadius: 20, // Rounded corners for the image
+    position: 'absolute',
+    top: screenHeight * 0.3 - (screenHeight * 0.4) / 2, // Move image center to 1/4 from top
   },
   textBox: {
-    width: '100%',
-    height: '50%',
-    backgroundColor: '#D0D0D0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '90%',
+    backgroundColor: '#D9D9D9',
+    padding: 10,
+    borderRadius: 20, // Rounded corners for the text box
+    position: 'absolute', 
+    bottom: screenHeight * 0.2 - 50, // Move text box center to 1/4 from bottom
+    alignItems: 'flex-start', // Align text to the left
   },
   text: {
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#000000',
+    fontSize: 20,
+    fontFamily: 'Arial',
+  },
+  loader: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -20, 
+    marginTop: -20, 
   },
 });
 

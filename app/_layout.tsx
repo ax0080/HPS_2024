@@ -82,7 +82,7 @@ export default function RootLayout() {
           )
         }} 
       />
-      <Stack.Screen name="DynamicPage" options={{ title: 'Dynamic Page' }} />
+      <Stack.Screen name="DynamicPage" options={{ title: '  ' }} />
       <Stack.Screen name="AlertPage" component={AlertPage} options={{ headerShown: false }} /> 
     </Stack>
   );

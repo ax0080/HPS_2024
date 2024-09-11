@@ -133,8 +133,26 @@ const Index = () => {
     );
   };
 
+  const renderLegend = () => (
+    <View style={styles.legendContainer}>
+      <View style={[styles.legendItem, { backgroundColor: '#FFDDDD' }]}>
+        <Text style={styles.legendText}>Expired</Text>
+      </View>
+      <View style={[styles.legendItem, { backgroundColor: '#FFFFDD' }]}>
+        <Text style={styles.legendText}>Expiring Soon</Text>
+      </View>
+      <View style={[styles.legendItem, { backgroundColor: '#DDFFDD' }]}>
+        <Text style={styles.legendText}>Not Expired Yet</Text>
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        {renderLegend()}
+      </View>
+
       <FlatList
         ref={flatListRef}
         data={foodItems}
@@ -151,13 +169,38 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#FFFFFF",
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+  },
+  legendContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  legendItem: {
+    padding: 5,
+    marginLeft: 10,
+    borderRadius: 5,
+  },
+  legendText: {
+    fontSize: 12,
+    color: "#000000",
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     margin: 5,
     height: screenHeight / 5,
+    borderRadius: 15,
   },
   imageContainer: {
     width: "35%",
@@ -171,16 +214,16 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "#FFFFFF",
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "flex-start",
   },
   mainTextBox: {
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#FFFFFF",
     marginLeft: "5%",
   },
   indexTextBox: {
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#FFFFFF",
     marginLeft: "5%",
   },
   image: {
